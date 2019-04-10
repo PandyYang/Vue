@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <table>
+            <tbod>
+                <tr is="row"></tr>
+                <tr is="row"></tr>
+                <tr is="row"></tr>
+            </tbod>
+        </table>
+    <div ref="hello"
+        @click="handleClick"
+    >
+        hello World
+    </div>
+    <counter ref = "one" @change="handleChange"></counter>
+    <counter ref = "two" @change="handleChange"></counter>
+
+    <div>{{total}}</div>
+    </div>
+    <script>
+
+        Vue.component('counter',{
+            template:'<div @click="handleClick2">{{number}}</div>',
+            data:function(){
+                return{
+                    number:0
+                }
+            },
+            methods:{
+                handleClick2:function(){
+                    this.number ++
+                    //发布订阅模式进行子组件向父组件传值
+                    this.$emit('change')
+                }
+            }
+        })
+
+        Vue.component('row',{
+            data:function(){
+                return {
+                    content:'this is content'
+                }
+            },
+            template:'<tr><td>{{content}}</td></tr>'
+        })
+
+        var vm = new Vue({
+            el:'#root',
+            methods:{
+                handleClick:function(){
+                    alert(this.$refs.hello.innerHTML)
+                },
+                handleChange:function(){
+                    //alert('change')
+                    this.total = this.$refs.one.number + this.$refs.two.number
+                    console.log(this.$refs.one.number)
+                    console.log(this.$refs.two.number)
+                }
+            },
+            data:{
+                total:0
+            }
+        })
+    </script>
+</body>
+</html>

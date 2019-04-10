@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <style>
+        .activated{
+            color:red;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="root">
+        <div @click="handleClick">
+                {{test}}
+        </div>
+        <item></item>
+        <div v-text="name"></div>
+        <div v-html="name2"></div>
+        <div @click="handleDivClick"
+            :class="[activated]"
+        >
+        hhhhhhhhhhhhh
+        </div>
+        <div :style="styleObj">
+            Hi ggggggggg
+        </div>
+        <!--此处其实可以写上数组的形式 数组之中可以挂载多个对象 例如 颜色 样式-->
+        <div :style="styleOgj2" @click="handleDivClick2">
+            PandyYang
+        </div>
+        <div :style="[styleOgj3,size]" @click="handleDivClick3">
+            字体也能变
+        </div>
+    </div>
+
+    <script>
+        //其实组件底层还是会编译成vue的实例
+        Vue.component('item',{
+            template:'<div> hello item</div>'
+        })
+
+        var vm = new Vue({
+            el:'#root',
+            data:{
+                message:'Hello World!',
+                test:'hello world',
+                name:"<h1>dell</h1>",
+                name2:"<h1>hehe</h1>",
+                activated:"",
+                styleObj:{
+                    color:"red"
+                },
+                styleOgj2:{
+                    color:"black"
+                },
+                styleOgj3:{
+                    color:"red"
+                },
+                size:{
+                    fontSize:'20px'
+                }
+            },
+            //template:'<div>Hello World</div>',
+            //vue生命周期中的函数
+            beforeCreate:function(){
+                console.log("beforeCreate");
+            },
+            created:function(){
+                console.log("created");
+            },
+            methods:{
+                handleClick:function(){
+                    alert("hello");
+                },
+                //绑定为空就是黑色的文字
+                handleDivClick:function(){
+                    this.activated = this.activated === "activated" ? "" : "activated";
+                },
+                //三元运算符在两种值之间的切换
+                handleDivClick2:function(){
+                    this.styleOgj2.color = this.styleOgj2.color === "black" ? "red" : "black";
+                },
+                handleDivClick3:function(){
+                    this.styleOgj3.color = this.styleOgj3.color === "black" ? "red" : "black";
+                    this.size.fontSize = this.size.fontSize === "20px" ? "10px" : "20px";
+                }
+            },
+            beforeMount:function(){
+                console.log(this.$el);
+                console.log("he he this is a beforeMount");
+            },
+            mounted:function(){
+                console.log(this.$el);
+                console.log("mounted is there");
+            },
+            beforeDestroy:function(){
+                console.log("beforeDetroy");
+            },
+            destroy:function(){
+                console.log("destroy");
+            },
+            beforeUpdate:function(){
+                console.log("beforeupdate");
+            }
+        })
+    </script>
+</body>
+</html>

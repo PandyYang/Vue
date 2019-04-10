@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue中的条件渲染</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div v-if="show">{{message}}</div>
+        <div v-else>Bye World</div>
+        <div v-show="show">{{message}}</div>
+        <!--if 和 else 必须写在一起 不能被分隔-->
+        <div v-if="show2 === 'a'">This is A</div>
+        <div v-else-if="show2 === 'b'">This is B</div>
+        <div v-else>This is others</div>
+
+        <div v-if="show3">
+            用户名:<input key="username" />
+        </div>
+        <div v-else>
+            邮箱名:<input key="password" />
+        </div>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el:"#app",
+            data:{
+                message:"hello world",
+                show:false,
+                show2:'a',
+                show3:false
+            }
+        })
+    </script>
+</body>
+</html>

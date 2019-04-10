@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <!--不加冒号是字符串 加上冒号就是数字 js的属性
+            监听事件的符号是@
+            必须在根组件中熟悉实现对应的监听方法
+        -->
+        <counter :count="0" @inc="handleIncrease"></counter>
+        <counter :count="1" @inc="handleIncrease"></counter>
+        <div>{{total}}</div>
+    </div>
+
+
+    <script>
+    
+    //局部组件需要在vue中进行注册
+    var counter = {
+        //props属性可以取到引用 从而取到相应的值
+        props:['count'],
+        //定义一份子组件 将数据放进来 避免直接对父组件中的count进行操作
+        //注意 子组件中data是一个函数 而不是对象
+        data:function() {
+            return {
+                number:this.count
+            }
+        },
+        template : '<div @click="handleClick">{{number}}</div>',
+        methods: {
+            handleClick:function(){
+                //单向数据流的概念 不能直接修改父类的数据类型
+                //this.count++
+                //试想子组件之间关联 要是改变了一个 那么别的都变了
+                 this.number = this.number+2;
+                 this.$emit('inc',2)
+            }
+        }
+    }
+
+
+    var vm = new Vue({
+        el:"#root",
+        components:{
+            counter:counter
+        },
+        data:{
+            total:5
+        },
+        //总的长度 就是每次点击加上步长的属性 步长属性内部计算得出
+        methods:{
+            handleIncrease:function(step){
+                //alert('inc')
+                this.total += step
+            }
+        }
+    })
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <script src="main.js"></script>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id='app'>
+        {{a}}
+        {{date}}
+        <span v-html="link"></span>
+        {{number / 10}}
+        {{isOK ? '确定' : '取消'}}
+        {{text.split(',').reverse().join(',')}}
+        {{date | formatDate}}
+        <p v-if="show">显示这段文本</p>
+        <button v-on:click="handleClose">点击</button>
+        <a v-bind:href="url">链接</a>
+        <img v-bind:src="imgUrl">
+        {{reverseText}}
+        总价:{{prices}}
+        姓名:{{fullName}}
+    </div>
+    <script>
+        //月份 日期 小时等小于10前补0
+        var padDate = function(value){
+        return value< 10 ? '0' + value : value;
+        };
+        
+        var app = new Vue({
+            el:'#app',
+            data:{
+                a:2,
+                date:new Date(),
+                //使用v-html语法可以输出 html 而不是解释后的文本值
+                link:'<a href="#">这是一个连接</a>',
+                number:10,
+                isOK:false,//vue不能使用流控制 要使用三元运算
+                text:'123,456',
+                show:true,
+                url:'https://www.github.com',//v-bind会动态更新html元素上的属性 可以缩写成:
+                imgUrl:'http://xxx.xxx.xxx/img.png',
+                package1:[
+                    {
+                        name:'iPhone 7',
+                        price:7199,
+                        count:2
+                    },
+                    {
+                        name:'iPhone 7 Plus',
+                        price:6999,
+                        count:1
+                    }
+                ],
+                package2:[
+                    {
+                        name:'iPhone XR',
+                        price:9999,
+                        count:2
+                    },
+                    {
+                        name:'iPhone 8',
+                        price:8888,
+                        count:8
+                    }
+                ],
+                firstName:'Pandy',
+                lastName:'Yang'
+            },
+            //使用计算属性处理复杂的表达式 将上文问的在表达式中处理的语句写在对应的函数中 作为结果进行返回
+            computed:{
+                reverseText:function(){
+                    return this.text.split(',').reverse().join(',');
+                },
+
+                prices:function(){
+                    var prices = 0;
+                    for(var i = 0;i<this.package1.length;i++){
+                        prices += this.package1[i].price * this.package1[i].count;
+                    }
+                    for(var i = 0;i<this.package2.length;i++){
+                        prices += this.package2[i].price * this.package2[i].count;
+                    }
+                    return prices;
+                },
+                fullName:{
+                    //getter 用于读取
+                    get:function(){
+                        return this.firstName + ' ' + this.lastName;
+                    },
+                    //setter 写入时触发
+                    set:function(newValue){
+                        var names = newValue.split(' ');
+                        this.firstName = names[0];
+                        this.lastName = names[names.length-1];
+                    }
+                }
+            },
+            methods:{//v-on 用来做时间监听器
+                //handleClose:function(){
+                //   this.show = !this.show;
+                //},
+                //可以将方法进行代理 增强可读性与可维护性
+                //v-on:click可以缩写成@click
+                handleClose:function(){
+                    this.close();
+                },
+                close:function(){
+                    this.show = !this.show;
+                }
+                
+            },
+            filters:{
+                formatDate:function(value){//这里的value就是需要过滤的数据 就是上面的date
+                    var date = new Date(value);
+                    var year = date.getFullYear();
+                    var month = padDate(date.getMonth() +1);
+                    var day = padDate(date.getDate());
+                    var hours = padDate(date.getHours());
+                    var minutes = padDate(date.getMinutes());
+                    var seconds = padDate(date.getSeconds());
+                    //将整理好的数据返回 回去
+                    return year + '-' + month + '-' + day + '-' + hours + ':'+ minutes + ':' + seconds;
+                }
+            },
+
+            created:function(){
+                console.log(this.a);
+            },
+            mounted:function(){
+                console.log(this.$el);
+                var _this = this;//声明一个变量指向作用域this 确保作用域一致
+                this.timer =setInterval(function(){//setInterval是周期性调用函数
+                    _this.date = new Date();//修改数据date
+                },1000);
+            },
+            beforeDestory:function(){
+                if(this.timer){
+                    clearInterval(this.timer);//vue实例销毁前,清除定时器
+                }
+            }
+        });
+        app.init('通过外部调用');//在vue实例外部调用
+    </script>
+</body>
+</html>

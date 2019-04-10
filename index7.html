@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <child @click="handleClick"></child>
+        <child2 @click.native="handleClick2"></child2>
+    </div>
+
+    <script>
+
+        //子组件进行参数校验 由一些规则进行实现
+        //可以是数组形式传入多个h值 也可以传入对象按照下面的方式进项传入
+        Vue.component('child',{
+            //在原生事件上触发 打印出click
+            template:'<div @click="handleChildClick">child</div>',
+            methods:{
+                handleChildClick:function(){
+                    //以下方式直接能触发原生事件
+                    alert("click")
+                    //通过以下方式监听自定义事件
+                    this.$emit('click')
+                }
+            }
+        })
+
+        //在点击事件之后加上native  自定义时间就能被vue实例监听到 实现和上面一样的效果
+        Vue.component('child2',{
+            template:'<div>child2</div>'
+        })
+
+
+        var vm = new Vue({
+            el:'#root',
+            methods:{
+                handleClick:function(){
+                    alert("click")
+                },
+                handleClick2:function(){
+                    alert("hehe")
+                }
+
+            }
+        })
+
+    </script>
+</body>
+</html>
